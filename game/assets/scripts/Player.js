@@ -16,9 +16,9 @@ cc.Class({
 
         direction : 0,
 
-        MOVE_SPEED : 20,
+        MOVE_SPEED : 0,
 
-        jumpHeight:65,
+        jumpHeight:200,
 
         // 主角跳跃持续时间
         jumpDuration: 0.5,

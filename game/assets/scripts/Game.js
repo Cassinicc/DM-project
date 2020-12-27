@@ -64,8 +64,8 @@ cc.Class({
         window.AudioContext = window.AudioContext || window.webkitAudioContext || window.mozAudioContext || window.msAudioContext;
         
         //获取json 将音符和长度存入数组
-        var url='midi-sample.json';
-        cc.loader.loadRes(url,function(err,res){
+        var url='../../static/midi-sample.json';
+        cc.assetManager.loadRemote(url,function(err,res){
             let notes=res.json.tracks[0].notes;
             for(let i=0;i<notes.length;i++){
                 G.pos.push(notes[i].midi);
