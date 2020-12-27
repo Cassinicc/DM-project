@@ -16,7 +16,7 @@ cc.Class({
 
         direction : 0,
 
-        MOVE_SPEED : 80,
+        MOVE_SPEED : 20,
 
         jumpHeight:65,
 

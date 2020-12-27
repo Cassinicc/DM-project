@@ -1,3 +1,8 @@
+window.G={
+    pos:[cc.Integer],
+    len:[cc.Float]
+};//全局变量
+
 const Player=require('Player');
 const Ground=require('Ground');
 
@@ -43,8 +48,6 @@ cc.Class({
         item: cc.Prefab
     },
 
-    
-
     // LIFE-CYCLE CALLBACKS:
 
     onLoad () {
@@ -59,6 +62,16 @@ cc.Class({
         }
         // 处理不同平台
         window.AudioContext = window.AudioContext || window.webkitAudioContext || window.mozAudioContext || window.msAudioContext;
+        
+        //获取json 将音符和长度存入数组
+        var url='midi-sample.json';
+        cc.loader.loadRes(url,function(err,res){
+            let notes=res.json.tracks[0].notes;
+            for(let i=0;i<notes.length;i++){
+                G.pos.push(notes[i].midi);
+                G.len.push(notes[i].duration);
+            }
+        })
     },
 
     onStartGame:function(){
@@ -99,7 +112,8 @@ cc.Class({
         self.audioBufferSourceNode.start(0);
         //cc.audioEngine.playMusic(audioClip,true);
         });     
-    
+        
+        
     },
 
 
@@ -127,6 +141,8 @@ cc.Class({
         this.analyser.getByteFrequencyData(this.dataArray);
         this.draw(this.dataArray);
     },
+
+
 
     draw (dataArray) {
         // 数值自定
