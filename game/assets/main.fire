@@ -84,25 +84,28 @@
         "__id__": 102
       },
       {
-        "__id__": 104
+        "__id__": 103
       },
       {
-        "__id__": 108
+        "__id__": 105
       },
       {
-        "__id__": 110
+        "__id__": 109
+      },
+      {
+        "__id__": 111
       }
     ],
     "_active": true,
     "_components": [
       {
-        "__id__": 112
-      },
-      {
         "__id__": 113
       },
       {
         "__id__": 114
+      },
+      {
+        "__id__": 115
       }
     ],
     "_prefab": null,
@@ -387,7 +390,7 @@
       "array": [
         0,
         0,
-        362.8646441856798,
+        365.46272039703314,
         0,
         0,
         0,
@@ -3447,6 +3450,64 @@
   },
   {
     "__type__": "cc.Node",
+    "_name": "mgr",
+    "_objFlags": 0,
+    "_parent": {
+      "__id__": 2
+    },
+    "_children": [],
+    "_active": true,
+    "_components": [],
+    "_prefab": null,
+    "_opacity": 255,
+    "_color": {
+      "__type__": "cc.Color",
+      "r": 255,
+      "g": 255,
+      "b": 255,
+      "a": 255
+    },
+    "_contentSize": {
+      "__type__": "cc.Size",
+      "width": 0,
+      "height": 0
+    },
+    "_anchorPoint": {
+      "__type__": "cc.Vec2",
+      "x": 0.5,
+      "y": 0.5
+    },
+    "_trs": {
+      "__type__": "TypedArray",
+      "ctor": "Float64Array",
+      "array": [
+        0,
+        -317.176,
+        0,
+        0,
+        0,
+        0,
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    "_eulerAngles": {
+      "__type__": "cc.Vec3",
+      "x": 0,
+      "y": 0,
+      "z": 0
+    },
+    "_skewX": 0,
+    "_skewY": 0,
+    "_is3DNode": false,
+    "_groupIndex": 2,
+    "groupIndex": 2,
+    "_id": "70QgGWYnxOjKQ+kVJurahS"
+  },
+  {
+    "__type__": "cc.Node",
     "_name": "gameOver",
     "_objFlags": 0,
     "_parent": {
@@ -3456,7 +3517,7 @@
     "_active": false,
     "_components": [
       {
-        "__id__": 103
+        "__id__": 104
       }
     ],
     "_prefab": null,
@@ -3512,7 +3573,7 @@
     "_name": "",
     "_objFlags": 0,
     "node": {
-      "__id__": 102
+      "__id__": 103
     },
     "_enabled": true,
     "_materials": [
@@ -3553,10 +3614,10 @@
     "_active": false,
     "_components": [
       {
-        "__id__": 105
+        "__id__": 106
       },
       {
-        "__id__": 106
+        "__id__": 107
       }
     ],
     "_prefab": null,
@@ -3612,7 +3673,7 @@
     "_name": "",
     "_objFlags": 0,
     "node": {
-      "__id__": 104
+      "__id__": 105
     },
     "_enabled": true,
     "_materials": [
@@ -3647,7 +3708,7 @@
     "_name": "",
     "_objFlags": 0,
     "node": {
-      "__id__": 104
+      "__id__": 105
     },
     "_enabled": true,
     "_normalMaterial": null,
@@ -3656,7 +3717,7 @@
     "zoomScale": 1.2,
     "clickEvents": [
       {
-        "__id__": 107
+        "__id__": 108
       }
     ],
     "_N$interactable": true,
@@ -3712,7 +3773,7 @@
     "hoverSprite": null,
     "_N$disabledSprite": null,
     "_N$target": {
-      "__id__": 104
+      "__id__": 105
     },
     "_id": "e2OoPIh+RDUJAvU6SIvZTy"
   },
@@ -3737,7 +3798,7 @@
     "_active": false,
     "_components": [
       {
-        "__id__": 109
+        "__id__": 110
       }
     ],
     "_prefab": null,
@@ -3793,7 +3854,7 @@
     "_name": "",
     "_objFlags": 0,
     "node": {
-      "__id__": 108
+      "__id__": 109
     },
     "_enabled": true,
     "_materials": [
@@ -3834,7 +3895,7 @@
     "_active": true,
     "_components": [
       {
-        "__id__": 111
+        "__id__": 112
       }
     ],
     "_prefab": null,
@@ -3860,8 +3921,8 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        411.619,
-        -274.413,
+        351.585,
+        259.457,
         0,
         0,
         0,
@@ -3890,7 +3951,7 @@
     "_name": "",
     "_objFlags": 0,
     "node": {
-      "__id__": 110
+      "__id__": 111
     },
     "_enabled": true,
     "_materials": [
@@ -3982,15 +4043,21 @@
       "__id__": 98
     },
     "gameOverNode": {
-      "__id__": 102
+      "__id__": 103
     },
     "restartNode": {
-      "__id__": 104
+      "__id__": 105
     },
     "gameWinNode": {
-      "__id__": 108
+      "__id__": 109
     },
     "audioclip": null,
+    "mgr": {
+      "__id__": 102
+    },
+    "item": {
+      "__uuid__": "30d78e4c-41f3-4f7b-b57a-93df411c9dce"
+    },
     "_id": "74E2Wa+mZDkaKeBXFyjiEc"
   }
 ]
