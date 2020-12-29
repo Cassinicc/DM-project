@@ -109,3 +109,89 @@ VAE是一种被广泛使用的生成模型，对于音乐这种序列数据同�
 ### 3.3 快速傅里叶变换
 
 （这个确定要用了我再写）
+
+
+
+### 4、实现
+
+###  4.4 背景生成
+
+#### 4.4.1 制作音乐条 [Prefab](https://docs.cocos.com/creator/manual/zh/getting-started/quick-start.html#制作-prefab)
+
+将需要重复生成的节点单个音乐条`item`保存成 Prefab（预制）资源，作为我们动态生成节点时使用的模板。
+
+添加`mgr`组件，在脚本中向该组件中动态添加子组件`item`。
+
+#### 4.4.2 添加游戏控制脚本 音频可视化
+
+利用[Web Audio API](https://developer.mozilla.org/zh-CN/docs/Web/API/Web_Audio_API)使音频可视化。
+
+一个简单而典型的web audio流程如下：
+
+![audiocontext](audiocontext.png)
+
+##### 4.4.2.1 创建AudioContext对象
+
+`AudioContext`接口表示由链接在一起的音频模块构建的音频处理图，每个模块由一个`AudioNode`表示。音频上下文控制它包含的节点的创建和音频处理或解码的执行。
+
+```javascript
+let AudioContext = window.AudioContext;
+// audioContext 只相当于一个容器。
+let audioContext = new AudioContext();
+```
+
+##### 4.4.2.2 创建AudioBuffer对象
+
+AudioBuffer接口表示存在内存里的一段短小的音频资源，利用`AudioContext.decodeAudioData()`方法从一个音频文件构建，或者利用 `AudioContext.createBuffer()`从原始数据构建。把音频放入AudioBuffer后，可以传入到一个 `AudioBufferSourceNode`进行播放。
+
+```javascript
+// 要让 audioContext 真正丰富起来需要将实际的音乐信息传递给它的，也就是将 AudioBuffer 数据传递进去。
+// 以下就是创建音频资源节点管理者。
+self.audioBufferSourceNode = audioContext.createBufferSource();
+// 将 AudioBuffer 传递进去。
+self.audioBufferSourceNode.buffer = audioClip._audio;
+```
+
+##### 4.4.2.3 数据分析和可视化
+
+`AnalyserNode`表示一个可以提供实时频率分析与时域分析的切点，利用分析器从音频内提取数据，这些分析数据可以用做数据分析和可视化。
+
+```javascript
+// 创建分析器。
+self.analyser = audioContext.createAnalyser();
+// 精度设置
+self.analyser.fftSize = 256;
+// 在传到扬声器之前，连接到分析器。
+self.audioBufferSourceNode.connect(self.analyser);
+```
+
+初始化item
+
+```javascript
+for (let i = 0; i < 40; i++) {
+  let item = cc.instantiate(this.item);
+  this.mgr.addChild(item);
+  item.y = 0;
+  item.x = -560 + i * 28 + 14;
+}
+```
+
+利用分析器中获取到的音频数据对组件进行数据的修改以进行绘制
+
+```javascript
+ draw (dataArray) {
+   for (let i = 0; i < 40; i++) {
+     let h = dataArray[i * 3] * 1.2;
+     if (h < 5) h = 5;
+     // this.mgr.children[i].height = h;
+     let node = this.mgr.children[i];
+     // 插值，不那么生硬
+     node.height = cc.misc.lerp(node.height, h, 0.4);
+   }
+ },
+```
+
+
+
+<img src="background.png" alt="1607246646807" style="zoom: 50%;" />
+
