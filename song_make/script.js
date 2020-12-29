@@ -549,15 +549,19 @@ function init() {
   fileBtn.addEventListener("change", loadFile);
   sampleBtn.addEventListener("click", loadSample);
   urlBtn.addEventListener("click", loadURL);
-  saveBtn.addEventListener("click", () => {
+  saveBtn.addEventListener("click", async () => {
+    var midiSample = mm.sequenceProtoToMidi(currentSample);
+    console.log(midiSample)
     var midiFile = new File(
-      [mm.sequenceProtoToMidi(currentSample)],
+      [midiSample],
       "midime_sample.midi"
     );
     saveAs(midiFile);
-    // const midi = new Midi(currentSample);
-    // var jsonFile = new File([midi], "midime_sample.json");
-    // saveAs(jsonFile);
+    
+    const midi = await Midi.fromUrl("/game_make/music/midime_sample.midi");
+    console.log(midi);
+    var jsonFile = new File([midi], "midime_sample.json");
+    saveAs(jsonFile);
   });
 
   btnPlayInput.addEventListener("click", (e) => play(e, 0));
