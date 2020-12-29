@@ -550,20 +550,31 @@ function init() {
   sampleBtn.addEventListener("click", loadSample);
   urlBtn.addEventListener("click", loadURL);
   saveBtn.addEventListener("click", async () => {
-    var midiSample = mm.sequenceProtoToMidi(currentSample);
-    console.log(midiSample)
-    var midiFile = new File(
+    const midiSample = mm.sequenceProtoToMidi(currentSample);
+    const midiFile = new File(
       [midiSample],
-      "midime_sample.midi"
+      "midime_sample1.midi"
     );
     saveAs(midiFile);
-    
-    const midi = await Midi.fromUrl("/game_make/music/midime_sample.midi");
-    console.log(midi);
-    var jsonFile = new File([midi], "midime_sample.json");
-    saveAs(jsonFile);
-  });
 
+  });
+  gameBtn.addEventListener('click',()=>{
+    const midiSample = mm.sequenceProtoToMidi(currentSample);
+    const midiFile = new File(
+      [midiSample],
+      "midime_sample1.midi"
+    );
+    const Url = 'http://127.0.0.1:3000';
+    axios({
+      method:'post',
+      url:Url,
+      data:midiFile
+    }).then((info)=>{
+      console.log(info)
+      }
+    ).catch((e) => console.log(e))
+    window.location.href = 'http://127.0.0.1:5500/game_make/web-mobile/index.html'
+  })
   btnPlayInput.addEventListener("click", (e) => play(e, 0));
   btnPlayMelody.addEventListener("click", (e) => play(e, 1));
   btnPlaySample.addEventListener("click", (e) => play(e, 2));
