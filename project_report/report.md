@@ -114,6 +114,88 @@ VAE是一种被广泛使用的生成模型，对于音乐这种序列数据同�
 
 ### 4、实现
 
+### 4.3 地图生成
+
+#### 4.3.1 动态读取json文件
+
+通过`assetManager`实现跨域读取文件。根据`json`文件中数组数据，将需要的数据压入数组。
+
+```javascript
+//获取json 将音符和长度存入数组
+        var url='../../static/midi-sample.json';
+        cc.assetManager.loadRemote(url,function(err,res){
+            let notes=res.json.tracks[0].notes;
+            for(let i=0;i<notes.length;i++){
+                G.pos.push(notes[i].midi);
+                G.len.push(notes[i].duration);
+            }
+        })
+```
+
+由于地图只选取主旋律部分，根据midi文件中`json`格式特性，仅获取第一个track的信息。根据每个音节的音符与长度构建每个地图块的位置和长度，因此只将`midi`和`duration`数据压入数组。
+
+`json`中部分内容如下：
+
+```json
+ "notes":[
+            {
+                "duration":0.5,
+                "durationTicks":220,
+                "midi":61,
+                "name":"C#4",
+                "ticks":0,
+                "time":0,
+                "velocity":0.7086614173228346
+            },
+            {
+            	"duration":0.5,
+            	"durationTicks":220,
+            	"midi":59,
+            	"name":"B3",
+            	"ticks":220,
+            	"time":0.5,
+            	"velocity":0.7086614173228346
+        	}
+          ]
+```
+
+#### 4.4.2 构建地图块组成地图
+
+首先需要将记录`json`信息的数据设置成全局变量，方便其他脚本对它进行访问。
+
+```javascript
+window.G={
+    pos:[cc.Integer],
+    len:[cc.Float]
+};//全局变量
+```
+
+在`Ground`脚本中添加`create`函数，根据`G`数组实例化预制体，并设置位置。
+
+```javascript
+create:function(){
+        let length=100;
+        for(let x=2;x<G.pos.length;x++){
+            let prefab=cc.instantiate(this.prefab);
+            this.node.addChild(prefab);
+            prefab.x=length+G.len[x]*100;
+            prefab.y=25*(G.pos[x]-G.pos[1]);
+            length+=G.len[x]*200;
+            prefab.getComponent('ground_control').parent=this.node;
+        }
+    }
+```
+
+按照音符位置依次设置地图块。由于游戏中预先放置了一个地图块作为依照点，实例化时从数组第三个元素开始访问（第一个元素是`json`文件基本信息）。实例化完成后需要为这些预制体添加父节点，方便后续地图移动控制。
+
+游戏开始界面，未构建地图。
+
+![image-20210102115443705](game_start.png)
+
+点击`play`后构建地图。
+
+![image-20210102115655023](map.png)
+
 ###  4.4 背景生成
 
 #### 4.4.1 制作音乐条 [Prefab](https://docs.cocos.com/creator/manual/zh/getting-started/quick-start.html#制作-prefab)

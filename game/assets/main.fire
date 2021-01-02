@@ -193,8 +193,8 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 40,
-      "height": 40
+      "width": 25,
+      "height": 25
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -205,8 +205,8 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        -332.705,
-        -44.667,
+        -408.786,
+        42.004,
         0,
         0,
         0,
@@ -258,7 +258,7 @@
     },
     "_fillStart": 0,
     "_fillRange": 0,
-    "_isTrimmedMode": true,
+    "_isTrimmedMode": false,
     "_atlas": null,
     "_id": "f59aQbvJRNV7S2oiJLDhKv"
   },
@@ -296,9 +296,9 @@
     },
     "_enabled": true,
     "tag": 0,
-    "_density": 1,
+    "_density": 0,
     "_sensor": false,
-    "_friction": 0.8,
+    "_friction": 0,
     "_restitution": 0,
     "body": null,
     "_offset": {
@@ -308,8 +308,8 @@
     },
     "_size": {
       "__type__": "cc.Size",
-      "width": 40,
-      "height": 40
+      "width": 25,
+      "height": 25
     },
     "_id": "24fNDFDCdC24r/zjyDnC3Q"
   },
@@ -325,8 +325,8 @@
       "__id__": 3
     },
     "direction": 0,
-    "MOVE_SPEED": 0,
-    "jumpHeight": 200,
+    "MOVE_SPEED": 50,
+    "jumpHeight": 100,
     "jumpDuration": 0.5,
     "_id": "71T7/BJRRALKPMfUTeb6gG"
   },
@@ -346,8 +346,8 @@
     },
     "_size": {
       "__type__": "cc.Size",
-      "width": 40,
-      "height": 40
+      "width": 25,
+      "height": 25
     },
     "_id": "6dWaQh1cZAG6pzE5Rt9n79"
   },
@@ -390,7 +390,7 @@
       "array": [
         0,
         0,
-        335.1085405659877,
+        335.1951483921658,
         0,
         0,
         0,
@@ -494,7 +494,7 @@
       "ctor": "Float64Array",
       "array": [
         -480,
-        -100,
+        0,
         0,
         0,
         0,
@@ -557,7 +557,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 200,
+      "width": 100,
       "height": 25
     },
     "_anchorPoint": {
@@ -569,7 +569,7 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        100,
+        50,
         0,
         0,
         0,
@@ -592,7 +592,7 @@
     "_is3DNode": false,
     "_groupIndex": 1,
     "groupIndex": 1,
-    "_id": "e1cgq0YPlMzZk959g66F4V"
+    "_id": "61rX5xR+ZJcaqiyuVsyr26"
   },
   {
     "__type__": "cc.Sprite",
@@ -624,7 +624,7 @@
     "_fillRange": 0,
     "_isTrimmedMode": true,
     "_atlas": null,
-    "_id": "222uodQwhM5rcmviX4/gKL"
+    "_id": "30UibE3T1KkYwUIUsBQJMN"
   },
   {
     "__type__": "cc.RigidBody",
@@ -649,7 +649,7 @@
     "enabledContactListener": false,
     "bullet": false,
     "awakeOnLoad": true,
-    "_id": "10oUVgsWtNrJFlUbCPQTL0"
+    "_id": "09Z7KAEK1GGomkHuTaIM28"
   },
   {
     "__type__": "cc.PhysicsBoxCollider",
@@ -660,7 +660,7 @@
     },
     "_enabled": true,
     "tag": 0,
-    "_density": 1,
+    "_density": 0,
     "_sensor": false,
     "_friction": 0,
     "_restitution": 0,
@@ -672,10 +672,10 @@
     },
     "_size": {
       "__type__": "cc.Size",
-      "width": 200,
+      "width": 100,
       "height": 25
     },
-    "_id": "4bf98Z6GNLB78pxO86tZ3t"
+    "_id": "ceP09x2oxJVrOBBCFLjxGL"
   },
   {
     "__type__": "c54ea19a/1HdrVaJL0D1l8C",
@@ -688,7 +688,7 @@
     "parent": {
       "__id__": 11
     },
-    "_id": "54DOxGNThKe7eQnb5LQfmv"
+    "_id": "f39ztXWIZH9Y+d3ZP4VNdF"
   },
   {
     "__type__": "cc.BoxCollider",
@@ -706,10 +706,10 @@
     },
     "_size": {
       "__type__": "cc.Size",
-      "width": 200,
+      "width": 100,
       "height": 25
     },
-    "_id": "dcLH0KmfZAApnTXrSVJUXX"
+    "_id": "14KVKnX4dAL4IbkRA3nZt2"
   },
   {
     "__type__": "cc.PrefabInfo",
@@ -755,7 +755,6 @@
       "__id__": 11
     },
     "_enabled": true,
-    "speed": -100,
     "prefab": {
       "__uuid__": "ddaa2081-61d2-4e09-960f-64dab57e83ed"
     },
@@ -1455,8 +1454,8 @@
     ],
     "_srcBlendFactor": 770,
     "_dstBlendFactor": 771,
-    "_string": "A , -> : move\nspace : jump ",
-    "_N$string": "A , -> : move\nspace : jump ",
+    "_string": "D , -> : move\nspace : jump ",
+    "_N$string": "D , -> : move\nspace : jump ",
     "_fontSize": 20,
     "_lineHeight": 20,
     "_enableWrapText": true,

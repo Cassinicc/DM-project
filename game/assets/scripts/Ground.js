@@ -3,7 +3,6 @@ cc.Class({
     extends: cc.Component,
 
     properties: {
-        speed:-100,
         prefab:cc.Prefab
             
 
@@ -20,7 +19,7 @@ cc.Class({
         this.create();
         this.enabled=true;
         var v=this.RigidBody.linearVelocity;
-        v.x=-100;
+        v.x=-200;
         this.RigidBody.linearVelocity=v;
     },
 
@@ -30,20 +29,18 @@ cc.Class({
         this.RigidBody.linearVelocity=v;
     },
     create:function(){
-        let length=200;
+        let length=100;
         for(let x=2;x<G.pos.length;x++){
             let prefab=cc.instantiate(this.prefab);
             this.node.addChild(prefab);
-            //prefab.getComponent(cc.Node).size=cc.size(G.len[x]*400,25);
-            prefab.x=length+G.len[x]*200;
+            prefab.x=length+G.len[x]*100;
             prefab.y=25*(G.pos[x]-G.pos[1]);
-            length+=G.len[x]*400;
-            console.log(length);
+            length+=G.len[x]*200;
             prefab.getComponent('ground_control').parent=this.node;
         }
     },
     update (dt) {      
-        if(this.node.x<=-(200*(G.pos.length-1)-320)&&this.RigidBody.linearVelocity.x!=0){
+        if(this.node.x<=-(100*(G.pos.length-1)-430)&&this.RigidBody.linearVelocity.x!=0){
             this.stopMove();
         }
             

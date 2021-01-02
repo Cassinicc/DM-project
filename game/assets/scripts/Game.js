@@ -58,19 +58,21 @@ cc.Class({
             let item = cc.instantiate(this.item);
             this.mgr.addChild(item);
             item.y = 0;
-            item.x = -560 + i * 28 + 14;
+            item.x = -300 + i * 28 + 14;
         }
         // 处理不同平台
         window.AudioContext = window.AudioContext || window.webkitAudioContext || window.mozAudioContext || window.msAudioContext;
         
         //获取json 将音符和长度存入数组
         var url='../../static/midi-sample.json';
+        //var url='midi-sample.json';
         cc.assetManager.loadRemote(url,function(err,res){
             let notes=res.json.tracks[0].notes;
             for(let i=0;i<notes.length;i++){
                 G.pos.push(notes[i].midi);
                 G.len.push(notes[i].duration);
             }
+            //console.log(G.pos.length);
         })
     },
 
@@ -89,6 +91,7 @@ cc.Class({
         //console.log(self.audioclip);
         
         var absolutePath="../../static//music/my_music.mp3"
+        //var absolutePath="my_music.mp3";
         cc.assetManager.loadRemote(absolutePath,function(err,audioClip){
         self.audioclip=audioClip;
         let AudioContext = window.AudioContext;
@@ -119,15 +122,19 @@ cc.Class({
 
     update (dt) {
         //玩家超出屏幕范围则触发失败逻辑
-        if(this.player.node.x>this.node.width/2||
-            this.player.node.x<-this.node.width/2||
-            this.player.node.y>this.node.height/2||
-            this.player.node.y<-this.node.height/2){
+        if(this.player.node.x<-600||
+            this.player.node.y>320||
+            this.player.node.y<-320){
                 this.gameOver();
+                var node=cc.find("Canvas/Ground");
+                var child=node.children;
+                for(var i=1;i<child.length;i++){
+                    child[i].destroy();
+                }
                 this.enabled=false;
                 return;
             } 
-        if(this.timer>=19){
+        if(this.timer>=43){
             this.gameWin();
             this.enabled=false;
         }
@@ -166,6 +173,8 @@ cc.Class({
         //停止背景音乐
         //cc.audioEngine.stopMusic(this.audioclip);
         this.audioBufferSourceNode.stop();
+        G.pos.length=0;
+        G.len.length=0;
         //console.log(this.audioclip);
     },
 
