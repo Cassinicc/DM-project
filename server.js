@@ -1,7 +1,7 @@
 /*
- * @Author: your name
+ * @Author: Yang Rui
  * @Date: 2020-12-29 17:36:00
- * @LastEditTime: 2020-12-29 23:32:07
+ * @LastEditTime: 2021-01-02 23:23:48
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /DM-project/server.js
@@ -10,7 +10,6 @@ const http = require("http");
 const app = http.createServer();
 const fs= require("fs");
 const { Midi } = require('@tonejs/midi');
-const synth = require('synth-js');
 const { midiToWav } = require("synth-js");
 const Lame = require("node-lame").Lame;
 app.on("request",(req,res)=>{
@@ -28,7 +27,7 @@ app.on("request",(req,res)=>{
                 const midi = new Midi(midiData);
                 fs.writeFileSync("./static/midi-sample.json", Buffer(JSON.stringify(midi)));
                 //midi to wav
-                const wavBuffer = synth.midiToWav(midiData).toBuffer();
+                const wavBuffer = midiToWav(midiData).toBuffer();
                 fs.writeFileSync('./static/music/sample.wav', wavBuffer, {encoding: 'binary'});
                 //wav to mp3
                 const encoder = new Lame({

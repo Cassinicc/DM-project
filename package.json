@@ -1,0 +1,25 @@
+{
+  "name": "fileserver",
+  "version": "1.0.0",
+  "description": "用于将song_make运行时产生的音乐文件保存到本地，进行转化并提供给game_make",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sophia501098/DM-project.git"
+  },
+  "author": "YangRui",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/sophia501098/DM-project/issues"
+  },
+  "homepage": "https://github.com/sophia501098/DM-project#readme",
+  "dependencies": {
+    "@tonejs/midi": "^2.0.25",
+    "node-lame": "^1.2.2",
+    "synth-js": "^0.1.2"
+  }
+}
