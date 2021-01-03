@@ -45,12 +45,15 @@ cc.Class({
             type:cc.AudioClip
         },
         mgr: cc.Node,
-        item: cc.Prefab
+        item: cc.Prefab,
+        time:cc.Float,
+        status:cc.Integer
     },
 
     // LIFE-CYCLE CALLBACKS:
 
     onLoad () {
+        this.status=0;
         this.enabled=false;
         //console.log(this.audioclip);
         // 实例化 item
@@ -66,6 +69,7 @@ cc.Class({
         //获取json 将音符和长度存入数组
         var url='../../static/midi-sample.json';
         //var url='midi-sample.json';
+        //cc.loader.loadRes(url,function(err,res){
         cc.assetManager.loadRemote(url,function(err,res){
             let notes=res.json.tracks[0].notes;
             for(let i=0;i<notes.length;i++){
@@ -92,6 +96,7 @@ cc.Class({
         
         var absolutePath="../../static//music/my_music.mp3"
         //var absolutePath="my_music.mp3";
+        //cc.loader.loadRes(absolutePath,function(err,audioClip){
         cc.assetManager.loadRemote(absolutePath,function(err,audioClip){
         self.audioclip=audioClip;
         let AudioContext = window.AudioContext;
@@ -113,7 +118,10 @@ cc.Class({
         self.analyser.connect(audioContext.destination);
         // 开始播放
         self.audioBufferSourceNode.start(0);
-        //cc.audioEngine.playMusic(audioClip,true);
+        var id=cc.audioEngine.play(audioClip,false,0);
+        self.time=cc.audioEngine.getDuration(id);
+        //console.log(self.time);
+        self.status=1;
         });     
         
         
@@ -123,6 +131,7 @@ cc.Class({
     update (dt) {
         //玩家超出屏幕范围则触发失败逻辑
         if(this.player.node.x<-600||
+            this.player.node.x>480||
             this.player.node.y>320||
             this.player.node.y<-320){
                 this.gameOver();
@@ -134,8 +143,9 @@ cc.Class({
                 this.enabled=false;
                 return;
             } 
-        if(this.timer>=43){
-            this.gameWin();
+        
+        if(status==1&&this.timer>=this.time){
+           this.gameWin();
             this.enabled=false;
         }
         this.timer += dt;
@@ -171,8 +181,8 @@ cc.Class({
         this.player.stopMove();
         this.ground.stopMove();
         //停止背景音乐
-        //cc.audioEngine.stopMusic(this.audioclip);
-        this.audioBufferSourceNode.stop();
+        cc.audioEngine.stopMusic(this.audioclip);
+        //this.audioBufferSourceNode.stop();
         G.pos.length=0;
         G.len.length=0;
         //console.log(this.audioclip);
@@ -182,8 +192,8 @@ cc.Class({
         this.gameWinNode.active=true;
         this.player.enabled=false;
         this.player.stopMove();
-        //cc.audioEngine.stopMusic(this.audioclip);
-        this.audioBufferSourceNode.stop();
+        cc.audioEngine.stopMusic(this.audioclip);
+        //this.audioBufferSourceNode.stop();
     },
 
     reloadScene:function(){
