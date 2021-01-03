@@ -19,7 +19,7 @@ cc.Class({
         this.create();
         this.enabled=true;
         var v=this.RigidBody.linearVelocity;
-        v.x=-200;
+        v.x=-180;
         this.RigidBody.linearVelocity=v;
     },
 

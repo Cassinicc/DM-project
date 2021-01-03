@@ -61,7 +61,7 @@ cc.Class({
             let item = cc.instantiate(this.item);
             this.mgr.addChild(item);
             item.y = 0;
-            item.x = -300 + i * 28 + 14;
+            item.x = -480 + i * 28 + 14;
         }
         // 处理不同平台
         window.AudioContext = window.AudioContext || window.webkitAudioContext || window.mozAudioContext || window.msAudioContext;
