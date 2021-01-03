@@ -1,7 +1,7 @@
 /*
  * @Author: Yang Rui
  * @Date: 2020-12-29 17:36:00
- * @LastEditTime: 2021-01-02 23:23:48
+ * @LastEditTime: 2021-01-03 15:09:25
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /DM-project/server.js
@@ -26,9 +26,11 @@ app.on("request",(req,res)=>{
                 const midiData = fs.readFileSync("./static/music/sample.midi");
                 const midi = new Midi(midiData);
                 fs.writeFileSync("./static/midi-sample.json", Buffer(JSON.stringify(midi)));
+                console.log('ok: midi to json')
                 //midi to wav
                 const wavBuffer = midiToWav(midiData).toBuffer();
                 fs.writeFileSync('./static/music/sample.wav', wavBuffer, {encoding: 'binary'});
+                console.log('ok: midi to wav')
                 //wav to mp3
                 const encoder = new Lame({
                     output: "./static/music/my_music.mp3",
@@ -38,7 +40,7 @@ app.on("request",(req,res)=>{
                     .encode()
                     .then(() => {
                         // Encoding finished
-                        console.log("mp3 finished!")
+                        console.log("ok: wav to mp3")
                     })
                     .catch(error => {
                         throw error
