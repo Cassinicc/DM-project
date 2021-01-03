@@ -16,9 +16,9 @@ cc.Class({
 
         direction : 0,
 
-        MOVE_SPEED : 80,
+        MOVE_SPEED : 50,
 
-        jumpHeight:65,
+        jumpHeight:100,
 
         // 主角跳跃持续时间
         jumpDuration: 0.5,
@@ -32,26 +32,7 @@ cc.Class({
         cc.director.getPhysicsManager().enabled=true;
         this.RigidBody=this.player.getComponent(cc.RigidBody);
 
-        //cc.director.getCollisionManager().enabled = true;
-        //cc.director.getCollisionManager().enabledDebugDraw = true;
-        //cc.director.getCollisionManager().enabledDrawBoundingBox = true;
-        //this.touchingNumber = 0;
-        
     },
-
-    /*onCollisionEnter: function (other) {
-        this.node.color = cc.Color.RED;
-        this.touchingNumber ++;
-    },
-
-    onCollisionStay: function (other) { },
-        
-    onCollisionExit: function () {
-        this.touchingNumber --;
-        if (this.touchingNumber == 0) {
-        this.node.color = cc.Color.WHITE; 
-        }
-    },*/
 
     onDestroy () {
         // 取消键盘输入监听
@@ -83,7 +64,7 @@ cc.Class({
     },
 
     update (dt) {
-        //console.log(this.touchingNumber);
+        
         if(this.direction!=0){
             this.on_player_walk();
         }
@@ -126,12 +107,12 @@ cc.Class({
         var jumpUp = cc.tween().by(this.jumpDuration, { y: this.jumpHeight }, { easing: 'sineOut' });
 
         // 下落
-        var jumpDown = cc.tween().by(this.jumpDuration, { y: -this.jumpHeight }, { easing: 'sineIn' });
+        var jumpDown = cc.tween().by(this.jumpDuration, { y: -this.jumpHeight*0.6 }, { easing: 'sineIn' });
 
         // 创建一个缓动
         var tween = cc.tween()
                         // 按 jumpUp，jumpDown 的顺序执行动作
-                        .sequence(jumpUp, jumpDown);
+                        .sequence(jumpUp,jumpDown);
         return tween;
     },
 

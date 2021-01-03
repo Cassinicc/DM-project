@@ -215,3 +215,171 @@ VAE是一种被广泛使用的生成模型，对于音乐这种序列数据同�
 ### 3.3 快速傅里叶变换
 
 （这个确定要用了我再写）
+
+
+
+### 4、实现
+
+### 4.3 地图生成
+
+#### 4.3.1 动态读取json文件
+
+通过`assetManager`实现跨域读取文件。根据`json`文件中数组数据，将需要的数据压入数组。
+
+```javascript
+//获取json 将音符和长度存入数组
+        var url='../../static/midi-sample.json';
+        cc.assetManager.loadRemote(url,function(err,res){
+            let notes=res.json.tracks[0].notes;
+            for(let i=0;i<notes.length;i++){
+                G.pos.push(notes[i].midi);
+                G.len.push(notes[i].duration);
+            }
+        })
+```
+
+由于地图只选取主旋律部分，根据midi文件中`json`格式特性，仅获取第一个track的信息。根据每个音节的音符与长度构建每个地图块的位置和长度，因此只将`midi`和`duration`数据压入数组。
+
+`json`中部分内容如下：
+
+```json
+ "notes":[
+            {
+                "duration":0.5,
+                "durationTicks":220,
+                "midi":61,
+                "name":"C#4",
+                "ticks":0,
+                "time":0,
+                "velocity":0.7086614173228346
+            },
+            {
+            	"duration":0.5,
+            	"durationTicks":220,
+            	"midi":59,
+            	"name":"B3",
+            	"ticks":220,
+            	"time":0.5,
+            	"velocity":0.7086614173228346
+        	}
+          ]
+```
+
+#### 4.4.2 构建地图块组成地图
+
+首先需要将记录`json`信息的数据设置成全局变量，方便其他脚本对它进行访问。
+
+```javascript
+window.G={
+    pos:[cc.Integer],
+    len:[cc.Float]
+};//全局变量
+```
+
+在`Ground`脚本中添加`create`函数，根据`G`数组实例化预制体，并设置位置。
+
+```javascript
+create:function(){
+        let length=100;
+        for(let x=2;x<G.pos.length;x++){
+            let prefab=cc.instantiate(this.prefab);
+            this.node.addChild(prefab);
+            prefab.x=length+G.len[x]*100;
+            prefab.y=25*(G.pos[x]-G.pos[1]);
+            length+=G.len[x]*200;
+            prefab.getComponent('ground_control').parent=this.node;
+        }
+    }
+```
+
+按照音符位置依次设置地图块。由于游戏中预先放置了一个地图块作为依照点，实例化时从数组第三个元素开始访问（第一个元素是`json`文件基本信息）。实例化完成后需要为这些预制体添加父节点，方便后续地图移动控制。
+
+游戏开始界面，未构建地图。
+
+![image-20210102115443705](game_start.png)
+
+点击`play`后构建地图。
+
+![image-20210102115655023](map.png)
+
+###  4.4 背景生成
+
+#### 4.4.1 制作音乐条 [Prefab](https://docs.cocos.com/creator/manual/zh/getting-started/quick-start.html#制作-prefab)
+
+将需要重复生成的节点单个音乐条`item`保存成 Prefab（预制）资源，作为我们动态生成节点时使用的模板。
+
+添加`mgr`组件，在脚本中向该组件中动态添加子组件`item`。
+
+#### 4.4.2 添加游戏控制脚本 音频可视化
+
+利用[Web Audio API](https://developer.mozilla.org/zh-CN/docs/Web/API/Web_Audio_API)使音频可视化。
+
+一个简单而典型的web audio流程如下：
+
+![audiocontext](audiocontext.png)
+
+##### 4.4.2.1 创建AudioContext对象
+
+`AudioContext`接口表示由链接在一起的音频模块构建的音频处理图，每个模块由一个`AudioNode`表示。音频上下文控制它包含的节点的创建和音频处理或解码的执行。
+
+```javascript
+let AudioContext = window.AudioContext;
+// audioContext 只相当于一个容器。
+let audioContext = new AudioContext();
+```
+
+##### 4.4.2.2 创建AudioBuffer对象
+
+AudioBuffer接口表示存在内存里的一段短小的音频资源，利用`AudioContext.decodeAudioData()`方法从一个音频文件构建，或者利用 `AudioContext.createBuffer()`从原始数据构建。把音频放入AudioBuffer后，可以传入到一个 `AudioBufferSourceNode`进行播放。
+
+```javascript
+// 要让 audioContext 真正丰富起来需要将实际的音乐信息传递给它的，也就是将 AudioBuffer 数据传递进去。
+// 以下就是创建音频资源节点管理者。
+self.audioBufferSourceNode = audioContext.createBufferSource();
+// 将 AudioBuffer 传递进去。
+self.audioBufferSourceNode.buffer = audioClip._audio;
+```
+
+##### 4.4.2.3 数据分析和可视化
+
+`AnalyserNode`表示一个可以提供实时频率分析与时域分析的切点，利用分析器从音频内提取数据，这些分析数据可以用做数据分析和可视化。
+
+```javascript
+// 创建分析器。
+self.analyser = audioContext.createAnalyser();
+// 精度设置
+self.analyser.fftSize = 256;
+// 在传到扬声器之前，连接到分析器。
+self.audioBufferSourceNode.connect(self.analyser);
+```
+
+初始化item
+
+```javascript
+for (let i = 0; i < 40; i++) {
+  let item = cc.instantiate(this.item);
+  this.mgr.addChild(item);
+  item.y = 0;
+  item.x = -560 + i * 28 + 14;
+}
+```
+
+利用分析器中获取到的音频数据对组件进行数据的修改以进行绘制
+
+```javascript
+ draw (dataArray) {
+   for (let i = 0; i < 40; i++) {
+     let h = dataArray[i * 3] * 1.2;
+     if (h < 5) h = 5;
+     // this.mgr.children[i].height = h;
+     let node = this.mgr.children[i];
+     // 插值，不那么生硬
+     node.height = cc.misc.lerp(node.height, h, 0.4);
+   }
+ },
+```
+
+
+
+<img src="background.png" alt="1607246646807" style="zoom: 50%;" />
+
