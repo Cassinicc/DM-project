@@ -47,13 +47,13 @@ cc.Class({
         mgr: cc.Node,
         item: cc.Prefab,
         time:cc.Float,
-        status:cc.Integer
+        status:0
     },
 
     // LIFE-CYCLE CALLBACKS:
 
     onLoad () {
-        this.status=0;
+        
         this.enabled=false;
         //console.log(this.audioclip);
         // 实例化 item
@@ -76,7 +76,7 @@ cc.Class({
                 G.pos.push(notes[i].midi);
                 G.len.push(notes[i].duration);
             }
-            //console.log(G.pos.length);
+            //console.log(G.len);
         })
     },
 
@@ -118,10 +118,13 @@ cc.Class({
         self.analyser.connect(audioContext.destination);
         // 开始播放
         self.audioBufferSourceNode.start(0);
-        var id=cc.audioEngine.play(audioClip,false,0);
-        self.time=cc.audioEngine.getDuration(id);
-        //console.log(self.time);
-        self.status=1;
+        if(status==0){
+            var id=cc.audioEngine.play(audioClip,false,0);
+            self.time=cc.audioEngine.getDuration(id);
+            self.status=1;
+            //console.log(self.time);
+        }
+
         });     
         
         
@@ -131,7 +134,7 @@ cc.Class({
     update (dt) {
         //玩家超出屏幕范围则触发失败逻辑
         if(this.player.node.x<-600||
-            this.player.node.x>480||
+            this.player.node.x>600||
             this.player.node.y>320||
             this.player.node.y<-320){
                 this.gameOver();
@@ -144,7 +147,7 @@ cc.Class({
                 return;
             } 
         
-        if(status==1&&this.timer>=this.time){
+        if(this.status==1&&this.timer>=this.time){
            this.gameWin();
             this.enabled=false;
         }
@@ -182,7 +185,7 @@ cc.Class({
         this.ground.stopMove();
         //停止背景音乐
         cc.audioEngine.stopMusic(this.audioclip);
-        //this.audioBufferSourceNode.stop();
+        this.audioBufferSourceNode.stop();
         G.pos.length=0;
         G.len.length=0;
         //console.log(this.audioclip);
@@ -193,7 +196,7 @@ cc.Class({
         this.player.enabled=false;
         this.player.stopMove();
         cc.audioEngine.stopMusic(this.audioclip);
-        //this.audioBufferSourceNode.stop();
+        this.audioBufferSourceNode.stop();
     },
 
     reloadScene:function(){
