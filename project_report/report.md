@@ -216,9 +216,98 @@ VAE是一种被广泛使用的生成模型，对于音乐这种序列数据同�
 
 （这个确定要用了我再写）
 
-
-
 ### 4、实现
+
+#### 4.1 项目整体实现
+
+##### 运行流程
+
+- 用户训练、配置生成满意的midi序列
+
+- 将midi音乐序列保存为midi音乐文件
+- 将midi文件发送到服务端
+- 服务端将接收到的midi文件分别转换为json文件和mp3文件
+- 将上诉文件保存到服务器本地供游戏地图生成和背景生成
+- 进入游戏，加载地图和背景
+
+##### 具体实现
+
+- 将midi序列保存为音乐文件
+
+```javascript
+const midiSample = mm.sequenceProtoToMidi(currentSample);
+const midiFile = new File(
+    [midiSample],
+    "midime_sample1.midi"
+);
+```
+
+- 通过向服务端发出post请求，将midi文件发送到服务端,待服务端处理完成后，载入游戏
+
+```javascript
+axios({
+    method:'post',
+    url:Url,
+    data:midiFile
+})
+.then((info)=>{
+	console.log(info)；
+    window.location.href = 'http://127.0.0.1:5500/game_make/web-mobile/index.html';
+})
+.catch((e) => console.log(e))
+})
+```
+
+- 服务端监听post请求，将接收到midi文件保存到内存缓冲区
+
+```javascript
+app.on("request", (req, res) => {
+  if (req.method == "POST") {
+    var data = [];
+    req.on("data", (chunk) => {
+      data.push(chunk);
+    });
+  }
+}
+```
+
+- 将midi文件转换为json文件
+
+```javascript
+var buffer = Buffer.concat(data);
+fs.writeFile("./static/music/sample.midi", buffer, (err) => {
+    if (!err) {
+        //midi to json
+        const midiData = fs.readFileSync("./static/music/sample.midi");
+        const midi = new Midi(midiData);
+        fs.writeFileSync(
+            "./static/midi-sample.json",
+            Buffer(JSON.stringify(midi))
+        );
+    }
+}
+```
+
+- 将midi文件转换为mp3文件，并返回给客户端处理结果
+
+```javascript
+//midi to mp3
+exec(
+    "timidity sample.midi -Ow -o my_music.mp3",
+    {
+        cwd: path.join(process.cwd(), "static/music"),
+    },
+    (err, stdout, stderr) => {
+        if (err) {
+            console.log(err);
+        }
+        console.log(`stdout:${stdout}`);
+    }
+);
+res.end("success");
+```
+
+- 客户端接收到处理返回结果，进入游戏
 
 ### 4.3 地图生成
 
