@@ -19,7 +19,6 @@
   "homepage": "https://github.com/sophia501098/DM-project#readme",
   "dependencies": {
     "@tonejs/midi": "^2.0.25",
-    "node-lame": "^1.2.2",
-    "synth-js": "^0.1.2"
+    "child_process": "^1.0.2"
   }
 }
