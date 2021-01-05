@@ -565,10 +565,10 @@ function init() {
     })
       .then((info) => {
         console.log(info);
-        window.location.href =
-          "http://127.0.0.1:5500/game_make/web-mobile/index.html";
       })
       .catch((e) => console.log(e));
+    window.location.href =
+      "http://127.0.0.1:5500/game_make/web-mobile/index.html";
   });
   btnPlayInput.addEventListener("click", (e) => play(e, 0));
   btnPlayMelody.addEventListener("click", (e) => play(e, 1));
@@ -587,11 +587,14 @@ function ready(mode) {
   updateCopy();
   //splashScreen.hidden = true;
   //mainScreen.hidden = false;
-  // updateUI("model-loading");
+  updateUI("model-loading");
 
   const url =
     "https://storage.googleapis.com/magentadata/js/checkpoints/music_vae/" +
     (isMelodyMode ? "mel_2bar_small" : "trio_4bar");
+  const localUrl = `./assets/${
+    isMelodyMode ? "mel_input.mid" : "trios_input.mid"
+  }`;
   mvae = new mm.MusicVAE(url);
   mvae.initialize().then(() => {
     sample();
@@ -627,6 +630,8 @@ function ready(mode) {
     mvaeSliders.appendChild(div);
   }
   loadSample();
+
+  // updateUI("model-loaded");
 }
 
 // Loads a file from the user.
@@ -653,8 +658,11 @@ function loadSample() {
   const url = isMelodyMode
     ? "https://cdn.glitch.com/d18fef17-09a1-41f5-a5ff-63a80674b090%2Fmel_input.mid?v=1564186536933"
     : "https://cdn.glitch.com/d18fef17-09a1-41f5-a5ff-63a80674b090%2Ftrios_input.mid?v=1564186506192";
+  const localUrl = isMelodyMode
+    ? "./assets/mel_input.mid"
+    : "./assets/trios_input.mid";
   //const url = 'https://cdn.glitch.com/d18fef17-09a1-41f5-a5ff-63a80674b090%2Fchpn_op10_e01_format0.mid?1556142864200';
-  mm.urlToNoteSequence(url).then((mel) => {
+  mm.urlToNoteSequence(localUrl).then((mel) => {
     showInput([mel]);
   });
 }
@@ -744,6 +752,7 @@ async function showInput(ns) {
     });
     return chunks;
   }
+  document.getElementById("loadingStatus").textContent = "载入样本完成✔︎";
 }
 
 // Get a new random sample.

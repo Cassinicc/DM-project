@@ -288,6 +288,11 @@ fs.writeFile("./static/music/sample.midi", buffer, (err) => {
 }
 ```
 
+得到的json文件:
+
+![img](./json-sample.png)
+
+
 - 将midi文件转换为mp3文件，并返回给客户端处理结果
 
 ```javascript
