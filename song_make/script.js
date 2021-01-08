@@ -1160,7 +1160,7 @@ function updateUI(state) {
 
 function updateCopy() {
   modeText.textContent = isMelodyMode ? "主旋律生成" : "多音轨生成";
-  trainingSteps.value = 100; //(isMelodyMode ? 100 : 300);
+  trainingSteps.value = 20; //(isMelodyMode ? 100 : 300);
 }
 
 window.updateUI = updateUI;

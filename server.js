@@ -1,7 +1,7 @@
 /*
  * @Author: Yang Rui
  * @Date: 2020-12-29 17:36:00
- * @LastEditTime: 2021-01-04 17:52:05
+ * @LastEditTime: 2021-01-05 12:45:09
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /DM-project/server.js
@@ -43,10 +43,10 @@ app.on("request", (req, res) => {
               console.log(`stdout:${stdout}`);
             }
           );
-          res.end("success");
         }
       });
     });
+    res.end("success");
   }
 });
 app.listen(3000, () => {
