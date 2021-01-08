@@ -1,5 +1,3 @@
-备注：先md糊一下，之后我用latex排排好，大家可在后面直接接着写，也可以另开新的，到时候我一起整合。
-
 ## 1、实验目的和背景
 
 很久之前，莫扎特曾经创作过一首《骰子音乐》，通过丢骰子的方法自动选择小节组合，组合出来的完整音乐仍然悦耳，但是创作的过程带有一定的随机性。 1950年代计算机发明后，出现了第一批计算机音乐。最早的音乐构建了一个马尔科夫过程，使用随机模型进行生成，辅以rule-based的方法挑选符合要求的结果。
@@ -23,17 +21,29 @@
 
 ### 2.2 各模块界面
 
-2.2.1 音乐生成
+#### 2.2.1 欢迎界面
 
+<img src="start.png" alt="1609833435887" style="zoom:49%;" />
+
+#### 2.2.2 音乐生成
+
+<<<<<<< HEAD
 ![m1](m1.png)
 
 ![m2](m2.png)
 
 ![m3](m3.png)
+=======
+<img src="train1.png" alt="1609833487162" style="zoom:25%;" />  <img src="train2.png" alt="1609833594549" style="zoom:26%;" />
+>>>>>>> d570903dd9d676261d407cf94d52b06400a82e3e
 
-2.2.2 音游界面
+#### 2.2.3 音游界面
 
+<<<<<<< HEAD
 ![g1](g1.png)
+=======
+<img src="game.png" alt="1609833774838" style="zoom: 50%;" />
+>>>>>>> d570903dd9d676261d407cf94d52b06400a82e3e
 
 ## 3、项目原理
 
@@ -45,15 +55,11 @@ MIDI(Musical Instrument Digital Interface)是数字音乐国际的标准，定�
 
 MIDI文件是二进制文件，其内部主要记录了乐曲播放时，音序器应发送给音源的MIDI指令和每条指令发送的时间点。音序器读取这些时间信息和MIDI指令，通过在相应的时间发送相应的指令，以实现乐曲中音符的顺序播放和节拍信息。除了音序器需要发送的MIDI事件之外，MIDI文件内部也记录了一些辅助信息，如版权信息、音轨名、速度信息、拍号、调号等等，这些信息被称为Meta-event，只用于记录一些曲子的信息，通常并不发送给MIDI系统中的其他设备。
 
-
-
 Midi是由一种名为“Chunk”的数据结构构成的，每个chunk由最初4字节的“Chunk类型”，紧接着4字节的“Chunk大小”（描述的是“Chunk 数据”的长度，而不是整个Chunk的长度。），和最后长度可变的“Chunk数据”构成。
 
 构成MIDI文件的Chunk主要有两种类型：一种是Header Chunk（MThd），另一种是Track Chunk（MTrk）。
 
 Header Chunk位于整个MIDI文件的起始处，是必须存在的，其起始标记就是ASCII码形式的“MThd”字符串。Track Chunk的起始标记，依然是ASCII码形式的“MTrk”字符串，并且Track Chunk整块分布于MIDI文件之中的任何位置，数量也不定，从1块到若干块皆可。实际上一个MIDI文件就是由一个Header Chunk和若干Track Chunk组成。读者若使用一个十六进制编辑软件（如UltraEdit）打开并查看一个MIDI文件时，便能找到这两部分。
-
-
 
 #### 3.1.1 MThd
 
@@ -67,11 +73,7 @@ MThd也就是Header Chunk，它位于整个MIDI文件的起始处，在每个 Mi
 4. `nnnn`值表示文件中有多少个MTrk块。对于MIDI 0格式文件，`nnnn`值仅为0001，即只有一个Track Chunk；MIDI 1格式文件则可以有多个Track Chunk，而且Track Chunk数目为实际的音轨数目加一。
 5. `dddd`值多采用TPQN时间度量法。TPQN是“Ticks Per Quarter-Note（每四分音符中所包含的Midi Tick数量）”的缩写，可以是十进制的60-480之间，**数值越大，MIDI系统的时间分辨率就越大，也就是说可以演奏时值越小的音符**。通常这个数都采用120、240、480，因为这些数都能被2、3、4甚至6、8整除，方便于八分音符、十六分音符、三连音甚至更短音符的演奏，换算成十六进制，就是0x78、0xF0、0x1E0。当然注意，这些十六进制数的最高位都是0。`dddd`值如果大于0x8000，则为SMPTE时间码度量法，这里不详细介绍了。
 
-![img](https://upload-images.jianshu.io/upload_images/15561067-399456bc0d0c10e1.png?imageMogr2/auto-orient/strip|imageView2/2/w/1200/format/webp)
-
-
-
-
+<img src="https://upload-images.jianshu.io/upload_images/15561067-399456bc0d0c10e1.png?imageMogr2/auto-orient/strip|imageView2/2/w/1200/format/webp" alt="img" style="zoom: 55%;" />
 
 #### 3.1.2 MTrk
 
@@ -79,24 +81,20 @@ MTrk（也就是Track Chunk）内部则包含了实际的MIDI信息和一些辅�
 
 我们以下面这个Midi文件的数据为例：
 
-```undefined
-4d54 6864 0000 0006 0000 0001 0064 4d54
-726b 0000 03a9 00c0 0000 903c 5a00 903f
-5a00 9043 5a00 9048 5a78 803f 0000 904b
-5a78 803c 0000 8043 0000 8048 0000 9037
-5a00 9046 5a78 8037 0000 8046 0000 9038
-5a00 9048 5a00 904d 5a78 8038 0000 8048
-0000 804b 0000 903a 5a00 9046 5a00 904a
-5a78 803a 0000 804a 0000 804d 0000 903f
-```
+>4d54 6864 0000 0006 0000 0001 0064 4d54
+>726b 0000 03a9 00c0 0000 903c 5a00 903f
+>5a00 9043 5a00 9048 5a78 803f 0000 904b
+>5a78 803c 0000 8043 0000 8048 0000 9037
+>5a00 9046 5a78 8037 0000 8046 0000 9038
+>5a00 9048 5a00 904d 5a78 8038 0000 8048
+>0000 804b 0000 903a 5a00 9046 5a00 904a
+>5a78 803a 0000 804a 0000 804d 0000 903f
 
 1. 首先`4d54 6864 0000 0006 0000 0001 0064`是上文介绍过的MThd部分。
 2. `4d54 726b` 是MTrk的开头，也就是“MTrk”的ASCII编码。
 3. `0000 03a9` 是MTrk数据部分的大小，这里转化为十进制是937。接下来就是937字节的数据。
 4. `xxyy xxyyyy ... ...` xx代表了Delta-time，yy代表了真正的MIDI事件。这些MIDI事件才是音序器在播放MIDI文件时需要实时处理和发送的数据。
 5. `00ff 2f00` 是Meta-event事件，表示此Track结束。
-
-
 
 其中：
 
@@ -113,17 +111,13 @@ MTrk（也就是Track Chunk）内部则包含了实际的MIDI信息和一些辅�
 1. 实际需要发送的数据（音序器直接将数据发送出去）
 2. meta-event事件（音序器修改自身的相关参数）
 
+- 下表详细说明了不同的数据对应的不同Midi时间，其中x 表示音轨 ，取值为0~F，比如 90 表示按下第一轨的音符。参数表示在Midi事件后需要读取的参数有几个以及他们各自表示的含义，一般来说每个参数占一个字节。
 
-
-- 下表详细说明了不同的数据对应的不同Midi时间，其中x 表示音轨 ，取值为0~F，比如 90 表示按下第一轨的音符。参数表示在Midi事件后需要读取的参数有几个以及他们各自表示的含义，一半来说每个参数占一个字节。
-
-<img src="https://upload-images.jianshu.io/upload_images/15561067-718b16b850a605f1.png?imageMogr2/auto-orient/strip|imageView2/2/w/974/format/webp" alt="img" style="zoom: 67%;" />
+<img src="https://upload-images.jianshu.io/upload_images/15561067-718b16b850a605f1.png?imageMogr2/auto-orient/strip|imageView2/2/w/974/format/webp" alt="img" style="zoom: 50%;" />
 
 - 下表为不同的参数值与不同音符的对应关系
 
-<img src="https://upload-images.jianshu.io/upload_images/15561067-e351e90a7404f5a3.png?imageMogr2/auto-orient/strip|imageView2/2/w/1200/format/webp" alt="img" style="zoom: 40%;" />
-
-
+<img src="https://upload-images.jianshu.io/upload_images/15561067-e351e90a7404f5a3.png?imageMogr2/auto-orient/strip|imageView2/2/w/1200/format/webp" alt="img" style="zoom: 30%;" />
 
 比如，在上文的例子中，MTrk头部及长度数据之后的Midi信息编码为：
 `---- ---- ---- 00c0 0000 903c 5a00 903f`
@@ -137,19 +131,9 @@ MTrk（也就是Track Chunk）内部则包含了实际的MIDI信息和一些辅�
 
 `78 80 3f 00`：时间差78（120tick），松开第一轨音符，音符号码为3f（63，#D4），力度为5a（90）
 
-
-
 最终Midi事件中包含的信息可以等价为：
 
-![img](https://upload-images.jianshu.io/upload_images/15561067-6336522f977d3dce.png?imageMogr2/auto-orient/strip|imageView2/2/w/1200/format/webp)
-
-
-
-
-
-
-
-
+<img src="https://upload-images.jianshu.io/upload_images/15561067-6336522f977d3dce.png?imageMogr2/auto-orient/strip|imageView2/2/w/1200/format/webp" alt="img" style="zoom:67%;" />
 
 ### 3.2 MusicVAE原理
 
@@ -215,10 +199,6 @@ VAE是一种被广泛使用的生成模型，对于音乐这种序列数据同�
 - Hierarchical Decoder：朴素的RNN decoder会出现posterior collapse的情况，因此为了保证解码过程中始终利用latent code的信息，对解码器进行了层次化的设计。
 
 层次的划分是基于音乐本身的结构特点：一首音乐包括$U$个小节，每个小节又包括$T$个节拍。基于这样的观察，latent code首先通过一个conductor RNN被映射为$U$个vector，这些vector就被用来初始化最终的Decoder RNN。在decode阶段，每$T$次RNN的隐藏状态就被初始化为下一个vector，对应了不同小节的音乐生成。在这样的设计之下，decoder RNN能通过这些vector来获取长程依赖，即一直都在利用latent code的信息。
-
-### 3.3 快速傅里叶变换
-
-（这个确定要用了我再写）
 
 ### 4、实现
 
@@ -294,7 +274,7 @@ fs.writeFile("./static/music/sample.midi", buffer, (err) => {
 
 得到的json文件:
 
-![img](./json-sample.png)
+<img src="./json-sample.png" alt="img" style="zoom:50%;" />
 
 
 - 将midi文件转换为mp3文件，并返回给客户端处理结果
@@ -394,11 +374,11 @@ create:function(){
 
 游戏开始界面，未构建地图。
 
-![image-20210102115443705](game_start.png)
+<img src="game_start.png" alt="image-20210102115443705" style="zoom:50%;" />
 
 点击`play`后构建地图。
 
-![image-20210102115655023](map.png)
+<img src="map.png" alt="image-20210102115655023" style="zoom:50%;" />
 
 ###  4.4 背景生成
 
@@ -414,7 +394,7 @@ create:function(){
 
 一个简单而典型的web audio流程如下：
 
-![audiocontext](audiocontext.png)
+<img src="audiocontext.png" alt="audiocontext" style="zoom:50%;" />
 
 ##### 4.4.2.1 创建AudioContext对象
 
@@ -477,7 +457,49 @@ for (let i = 0; i < 40; i++) {
  },
 ```
 
+<img src="background.png" alt="1607246646807" style="zoom: 33%;" />
 
+## 5、个人总结
 
-<img src="background.png" alt="1607246646807" style="zoom: 50%;" />
+**张宇晴**
+
+在本次项目中我主要负责神经网络生成音乐原理的探索。虽然现在学术界和工业界有很多基于神经网络生成音乐的研究，但是能真正生成符合人类听觉习惯的音乐且公开模型和技术细节的成果并不多。在项目初期，我基于以前的一些知识积累和课程作业，自己搭建了一个**基于LSTM的爵士乐生成模型**，但后期发现生成的音乐存在以下问题：第一是生成的音乐音轨较多且音符特别跳跃，无法很好地与音游地图结合进行可视化；第二是生成的音乐比较难听且杂乱无章，虽然LSTM比朴素RNN多了记忆功能，但是前后音乐仍然没有很大的关联性。因为爵士乐本身比较复杂，开始我以为是训练集和一些预处理操作的问题，但经过更换训练集以及一系列调参后，得到的结果并没有显著向好。
+
+基于这些问题，我查阅了很多文献，我发现曾经在三维视觉中使用过的**VAE模型**竟然也可以应用在生成音乐方面，它将高维的音乐数据编码到隐空间的latent code，并用这个latent code来初始化音符RNN解码器。因为隐空间学习到的特征是符合人类听觉特征的，所以解码后的结果可以解决音乐难听、杂乱的问题。但朴素的VAE仍然无法解决前后音乐关联性不强的问题，这个问题在多篇文献中都被提到，也是当前困扰音乐生成的主要问题，即“posterior collapse”问题（后面生成的音乐与latent code无关）。最后，我发现谷歌最新的**“MusicVAE"模型**中的分层方法在一定程度上解决了这个问题。它增加了引导器模块，将latent code映射为多个向量，分别独立地去监督每一个音乐小节的生成，这样解码器就能获取latent code的长程依赖，从而生成前后关联性强的音乐。
+
+**李沛瑶**
+
+由于生成音乐需要与音游结合，所以对生成的音乐有两点要求：第一是长度足够长；第二是符合音游音乐的背景音乐特征，融合多种乐器。对于第一个问题，由于VAE模型中的latent space本身具有压缩性、真实性、平滑性的特点，所以对latent code随机进行一些小的扰动，可以得到有微小变化的音乐片段。将这些小片段拼接即可得到一段**前后关联且足够长**的音乐。对于第二个问题，MusicVAE模型有一种变种，可以将分层结构应用于**多种乐器**的演奏。方法是引导器后面使用多个不同乐器的解码器，为了表达不同乐器间的组合，可以从不同的乐器中选出两个来进行差值生成。
+
+**曹讯**
+
+在本次项目中我主要负责完成音游的动态背景部分。在这个过程中我接触到了**Cocos Creator**这一制作网页端游戏的游戏引擎，从0开始学习Cocos的过程中学会了游戏引擎的基本工作流程，以及如何配置项目资源、编写脚本等。Cocos Creator使用Javascript作为脚本语言，所以在制作动态背景也就是音频可视化的过程中，经过查阅资料我最后选择了**Web Audio API**这一网页端的音频处理API来进行动态背景的制作。调用Web Audio API中的接口对音频文件中的数据进行分析处理，主要是通过**fft变换**，处理后的数据用于可视化的制作。在引擎中将需要重复利用的音频条资源设置为Preface(预置资源)，在脚本中编写代码以便在大的节点中有序生成音频条节点，并且用处理后的音频数据对这些组件进行形状的改变来实现可视化。为了使音频条的变化不那么生硬，在这个过程中我对数据进行了插值。
+
+刚开始为了对midi文件进行可视化操作我深入了解了midi文件的内容、其中数据的意义，后来因为Cocos的限制，播放背景音乐的时候只能调用mp3文件，所以才去寻找到了Web Audio API。Web Audio API与Cocos官方进行音频播放的组件AudioSource和AudioEngine是不可连通的，我本来打算只使用Web Audio API的分析器进行音频处理，使用AudioEngine组件连接扬声器，但是最后发现只有使用Web Audio API连接到扬声器才能使分析器中的数据处理生效。Cocos Creator不常用来作为音频可视化的工具，在这个过程中我对使用Cocos Creator进行音频可视化做出了尝试。
+
+**杨锐**
+
+在这次项目中，我主要负责的是midi音乐生成和游戏两个部分的整合工作。
+
+主要是将生成的midi音乐序列保存为midi文件，并将midi文件解析为json文件，供游戏项目读取并加载地图
+
+同时需要转换为mp3文件，作为游戏项目的BGM和动态背景的生成。
+
+关于困难：
+
+- 文件流的处理：
+
+  我们的音乐项目和游戏项目是分为两个模块写的，最终都是运行在Web的。由于midi音乐序列是在前一个项目运行时产生在内存中，而游戏模块需要从本地读取文件，因此起初我打算使用JavaScript提供的`File`对象解决。但与C/C++/Java等语言的宿主环境是操作系统不同，音乐模块的载体是运行在浏览器的，因此JavaScript对本地磁盘文件的支持很差，难以实现用户选择进入游戏->游戏模块载入刚刚生成midi音乐文件->加载游戏的效果。合理的逻辑是：将用户生成的midi文件通过网络请求发送到后端服务器，服务器保存在游戏模块对应的本地位置。由于游戏模块使用Cocos制作并导出为JavasScipt，模块较为独立，我便使用node.js单独写了一个简单的服务器，监听客户端发来的post请求，并将上传的midi文件保存在本地游戏模块对应位置。并为后续转换和解析作准备。
+
+- midi文件的转化：
+
+  我们的项目对midi文件有两个需求，一是midi文件解析为json，供游戏模块加载与音乐的相关的地图；二是转换为mp3，作为游戏模块的BGM和动态的音阶地图。对于前者，在简单了解了midi文件的格式，使用现有的midi-file-parser提取出Header Chunk（MThd)和Track Chunk（MTrk)，保存为json对象格式。对于后者，由于mp3文件格式较为复杂，使用unix下的timidity命令进行转换。
+
+关于收获：
+
+通过课程学习，感受到在计算机应用日益成熟的今天，人们对视听效果提出 了越来越高的要求，未来人们关于听觉与视觉的探索与应用可能有更多元的交互 尝试。而通过小组成员的交流学习，也让我拓宽了视野，加深了对计算机在音乐 产业的运用上的思考，收获体验良多。
+
+查找资料、了解不同实现方案的过程，也是启发自我思路、产生火花的过程。 而探索是有意义的，在逐渐深入的过程中，予人“山有小口，仿佛若有光”的思 考之境。在这个过程中，我也体会到，音乐处理是目前应用十分广泛且贴近我们生活实际的技术，期待在今后对相关知识有更深入的学习了解。亦期待技术与艺 术的结合成就更美好的世界。
+
+总的来说通过这⻔课，我了解了各种计算机对⾳乐的分析⽅法及应⽤，⽽且更重要的是，与⼩组成员⼀起，通过调研提出了待改进的问题，并运⽤所学知识，提出了⾃⼰的解决⽅案，并达成了不错的效果，可谓收获颇丰。
 
